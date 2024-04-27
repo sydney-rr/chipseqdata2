@@ -1,0 +1,171 @@
+###R Markdown Explanation of Functions
+
+```{r}
+##Find the percentage of each base in a FASTA file
+
+#This function loads the package seqinr, which allows us to import a FASTA file into R
+#then we convert the fasta file into a data frame
+#then we calculate how many bases are in the fasta file
+#then we calculate how many bases in the fasta file are A
+#then we calculate the percentage of bases that are A
+percentA <-
+function(x){
+  library(seqinr)
+  y <- read.fasta(x)
+  my_dataframe <- as.data.frame(y)
+  fastalength <- length(my_dataframe[,1])
+  A <- length(which(my_dataframe=="a"))
+  (A/fastalength)*100
+}
+
+#percentA("/Users/sydneyrattey/downloads/2M77821.1.fasta")
+
+percentT <-
+function(x){
+  library(seqinr)
+  y <- read.fasta(x)
+  my_dataframe <- as.data.frame(y)
+  fastalength <- length(my_dataframe[,1])
+  Te <- length(which(my_dataframe=="t"))
+  (Te/fastalength)*100
+}
+
+percentC <-
+function(x){
+  library(seqinr)
+  y <- read.fasta(x)
+  my_dataframe <- as.data.frame(y)
+  fastalength <- length(my_dataframe[,1])
+  C <- length(which(my_dataframe=="c"))
+  (C/fastalength)*100
+}
+
+percentG <-
+function(x){
+  library(seqinr)
+  y <- read.fasta(x)
+  my_dataframe <- as.data.frame(y)
+  fastalength <- length(my_dataframe[,1])
+  G <- length(which(my_dataframe=="g"))
+  (G/fastalength)*100
+}
+```
+```{r}
+##Find the average length of reads
+
+#we load the samtools package to import BAM files into R
+#we use the samtools package to give us a summary of the BAM file data
+#we average the length of the reads
+
+avgreadlength <-
+function(x,y){
+  library(Rsamtools)
+  reads <-BamFile(x,
+                  index=y)
+  istats <- idxstatsBam(reads)
+  mean(istats[,2])
+}
+
+#avgreadlength('/Users/sydneyrattey/downloads/2SRR4105763.bam', '/Users/sydneyrattey/downloads/2SRR4105763.bam.bai')
+```
+```{r}
+##Find the number of mapped reads
+
+#we load the samtools package to import BAM files into R
+#we use the samtools package to give us a summary of the BAM file data
+#we sum the number of reads that were mapped to the genome
+
+mapped <-
+function(x,y){
+  library(Rsamtools)
+  reads <-BamFile(x,
+                  index=y)
+  istats <- idxstatsBam(reads)
+  sum(istats[,3])
+}
+
+#mapped('/Users/sydneyrattey/downloads/2SRR4105763.bam', '/Users/sydneyrattey/downloads/2SRR4105763.bam.bai')
+
+#this function does the same except for unmapped reads
+unmapped <-
+  function(x,y){
+    library(Rsamtools)
+    reads <-BamFile(x,
+                    index=y)
+    istats <- idxstatsBam(reads)
+  istats[1,4]
+  }
+
+#This function shows you the total number of reads (mapped and unmapped)
+mapvsnot <-
+function(x,y){
+  library(Rsamtools)
+  reads <-BamFile(x,
+                  index=y)
+  istats <- idxstatsBam(reads)
+  add <- sum(istats[,3])
+  add + istats[1,4]
+}
+```
+```{r}
+##Find the percentage of reads that are mapped to the genome
+
+#we load the samtools package to import BAM files into R
+#we use the samtools package to give us a summary of the BAM file data
+#we add up the number of reads
+#we add the number of mapped read to the number of unmapped reads
+#we find the percentage of the reads that are mapped
+
+percentmapped <-
+function(x,y){
+  library(Rsamtools)
+  reads <-BamFile(x,
+                  index=y)
+  istats <- idxstatsBam(reads)
+  add <- sum(istats[,3])
+  total <- add + istats[1,4]
+  (add / total)*100
+}
+
+#percentmapped('/Users/sydneyrattey/downloads/2SRR4105763.bam', '/Users/sydneyrattey/downloads/2SRR4105763.bam.bai')
+
+#This function is the same, but we find the percentage of the reads that are unmapped
+
+percentunmapped <-
+  function(x,y){
+    library(Rsamtools)
+    reads <-BamFile(x,
+                    index=y)
+    istats <- idxstatsBam(reads)
+  add <- sum(istats[,3])
+  total <- add + istats[1,4]
+  (istats[1,4] / total)*100
+}
+```
+```{r}
+##Find the number of "GATA" sequences in a FASTA file
+
+#we load the seqinr package to import FASTA files into R
+#we convert the fasta file into a vector
+#we get rid of the "" in the file
+#We filter the file for "GATA" sequences and count the number that is found
+
+count_gata <-
+function(data) {
+  library(seqinr)
+  y <- read.fasta(data)
+  # Convert the data into a vector
+  data_vec <- as.vector(unlist(y))
+
+  # get rid of ""
+  data_str <- paste(data_vec, collapse = "")
+
+  # Filter for "gata" sequences and count them
+  gata_count <- length(gregexpr("gata", data_str, fixed = TRUE)[[1]])
+
+  # Return the number of "gata" sequences in the file
+  return(gata_count)
+}
+
+#count_gata("/Users/sydneyrattey/downloads/2M77821.1.fasta")
+```

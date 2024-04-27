@@ -1,0 +1,13 @@
+Package: chipseqdata
+Type: Package
+Title: Manipulating ChIP-Seq Data
+Version: 0.0.0.9000
+Author: Sydney Rattey
+Maintainer: Sydney Rattey <srattey4@gmail.com>
+Description: Manipulating ChIP-Seq data to find the base composition of FASTA files, number of GATA motifs,and read statistics.
+Depends: R (>= 3.1.2)
+License: CC0 1.0
+Encoding: UTF-8
+LazyData: true
+Imports: seqinr, Rsamtools
+RoxygenNote: 7.3.1

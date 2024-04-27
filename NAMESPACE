@@ -1,0 +1,2 @@
+export("avgreadlength", "count_gata", "hello", "mapped", "mapvsnot", "percentA",
+       "percentC", "percentG", "percentmapped", "percentT", "percentunmapped", "unmapped")
